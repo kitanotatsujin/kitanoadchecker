@@ -1,6 +1,6 @@
 # ==================================
 # Multi-stage Dockerfile for Next.js
-# Optimized for Koyeb deployment
+# Optimized for Railway deployment
 # ==================================
 
 # ----------------
@@ -10,8 +10,8 @@ FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package files from Testproject directory
-COPY Testproject/package.json Testproject/package-lock.json* ./
+# Copy package files from root directory
+COPY package.json package-lock.json* ./
 RUN npm ci --only=production && npm cache clean --force
 
 # ----------------
@@ -22,7 +22,7 @@ WORKDIR /app
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY Testproject/ .
+COPY . .
 
 # Set environment variable for build
 ENV NEXT_TELEMETRY_DISABLED=1
