@@ -72,5 +72,4 @@ CLAUDE.md
 # Misc
 .prettierrc
 .eslintrc.json
-tsconfig.json
 vitest.config.ts
