@@ -6,7 +6,8 @@
 echo "🚀 Starting application..."
 
 # Check if we need to run vector DB setup (one-time only)
-if [ "$RUN_VECTOR_SETUP" = "true" ]; then
+# Support both RUN_VECTOR_SETUP and SETUP_VECTOR_DB for compatibility
+if [ "$RUN_VECTOR_SETUP" = "true" ] || [ "$SETUP_VECTOR_DB" = "true" ]; then
   echo "📦 Running Vector DB setup (one-time)..."
   echo "   This will populate ChromaDB with knowledge base embeddings."
   echo "   CHROMA_URL: ${CHROMA_URL}"
