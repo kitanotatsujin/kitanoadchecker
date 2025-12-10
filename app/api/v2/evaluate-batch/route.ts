@@ -354,14 +354,25 @@ export async function POST(request: NextRequest) {
       let hasViolations = !geminiEvaluation.compliance;
 
       // 0. Filter out Gemini violations that are duplicates of NG keyword validator detections
+      // Only removes violations that are clearly about the same keyword/expression
+      // Uses strict pattern matching to avoid removing unrelated violations
       if (ngResult && ngResult.hasViolations && ngResult.matches.length > 0) {
         const detectedKeywords = ngResult.matches.map(m => m.keyword);
         const beforeFilterCount = mergedViolations.length;
 
         mergedViolations = mergedViolations.filter(violation => {
+          // Pattern 1: 「...keyword...」という表現 (quoted expression with keyword)
+          // Pattern 2: ...keyword...という表現 (unquoted but explicit "expression" mention)
+          // This ensures we only remove violations that are specifically ABOUT the keyword expression
+          // NOT violations that merely mention the keyword in a different context
           const isDuplicate = detectedKeywords.some(keyword => {
+            // Escape special regex characters in keyword
             const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            // Strict pattern: Only match when Gemini is reporting about a quoted expression containing the keyword
             const quotedExpressionPattern = new RegExp(`^[「『].*${escapedKeyword}.*[」』]という表現`);
+
+            // Also match unquoted but explicit pattern at start of description
             const explicitExpressionPattern = new RegExp(`^「.*${escapedKeyword}.*」`);
 
             const matches = quotedExpressionPattern.test(violation.description) ||
@@ -376,10 +387,10 @@ export async function POST(request: NextRequest) {
 
           if (isDuplicate) {
             console.log(`[Duplicate Filter] 🗑️  Removed duplicate violation about NG keyword expression: "${violation.description.substring(0, 80)}..."`);
-            return false;
+            return false; // Remove this duplicate
           }
 
-          return true;
+          return true; // Keep this violation (not a duplicate)
         });
 
         const filteredCount = beforeFilterCount - mergedViolations.length;

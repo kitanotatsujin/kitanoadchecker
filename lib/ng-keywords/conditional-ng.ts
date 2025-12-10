@@ -343,63 +343,6 @@ export const refundGuaranteeKeywords: ConditionalNGKeyword[] = [
 ];
 
 /**
- * ランキング・順位表現キーワード - エビデンスの注釈が必須（景表法）
- * Issue #36: Amazon・楽天で1位等のランキング表現を検知
- */
-export const rankingKeywords: ConditionalNGKeyword[] = [
-  {
-    keyword: ['1位', '第1位', '第一位', '一位'],
-    category: 'guarantee', // 景表法関連なのでguaranteeカテゴリを流用
-    requiredAnnotation: /※.{0,100}(調査|ランキング|集計|Amazon|楽天|Yahoo)/,
-    description: 'ランキング・順位表現には景表法により調査機関・調査期間・調査対象を明記したエビデンスが必須です',
-    severity: 'high',
-    okExamples: [
-      'Amazon・楽天で1位※を獲得 ※2024年1月Amazon・楽天ランキング調査',
-      '売上NO.1※ ※2024年自社調べ（調査期間：2023/1-12、対象：当社商品）',
-      '第1位※獲得 ※楽天ランキング2024年1月集計',
-    ],
-    ngExamples: [
-      'Amazon・楽天で1位を獲得した人気商品です。',
-      '売上NO.1の実績',
-      'ランキング第1位',
-    ],
-    referenceKnowledge: 'knowledge/common/37_エビデンス表記について.txt',
-  },
-  {
-    keyword: ['NO.1', 'No.1', 'ナンバーワン', 'ナンバー1', 'No1'],
-    category: 'guarantee',
-    requiredAnnotation: /※.{0,100}(調査|ランキング|集計|売上|販売)/,
-    description: 'NO.1表現には景表法により調査機関・調査期間・調査対象を明記したエビデンスが必須です',
-    severity: 'high',
-    okExamples: [
-      '売上NO.1※ ※2024年自社調べ（調査期間：2023/1-12）',
-      '販売数NO.1※ ※楽天市場ランキング調査2024年1月',
-    ],
-    ngExamples: [
-      '売上NO.1を達成',
-      '販売実績NO.1',
-      'ナンバーワン商品',
-    ],
-    referenceKnowledge: 'knowledge/common/37_エビデンス表記について.txt',
-  },
-  {
-    keyword: ['トップ', 'TOP'],
-    category: 'guarantee',
-    requiredAnnotation: /※.{0,100}(調査|ランキング|集計|Amazon|楽天)/,
-    description: 'トップ表現（ランキング文脈）には景表法によりエビデンスが必須です',
-    severity: 'high',
-    okExamples: [
-      'Amazonランキングでトップ※獲得 ※2024年1月Amazon調べ',
-    ],
-    ngExamples: [
-      'ランキングトップを獲得',
-      'トップの売上実績',
-    ],
-    referenceKnowledge: 'knowledge/common/37_エビデンス表記について.txt',
-  },
-];
-
-/**
  * 全ての条件付きNGキーワード
  */
 export const conditionalNGKeywords: ConditionalNGKeyword[] = [
@@ -408,7 +351,6 @@ export const conditionalNGKeywords: ConditionalNGKeyword[] = [
   ...medicalEffectKeywords,
   ...kumaKeywords,
   ...refundGuaranteeKeywords,
-  ...rankingKeywords, // Issue #36: ランキング表現を追加
 ];
 
 /**
